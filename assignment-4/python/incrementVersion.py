@@ -1,5 +1,6 @@
 """
 this script should take a file with proper naming structure and increment the version by 1
+if file name is not set up, use initializeFileName.py first
 
 for use in maya, either make it its own shelf button or copy directly into the script editor
 
