@@ -68,10 +68,22 @@ for images in os.listdir(framesPath):
             #if size is too small
             if imgSize < minSize:
                 brokenImages.append("{} : File abnormally small".format(images))
+                
+        #if there isn't a prevSize - make that the first frame and come back to it later
+        else:
+            firstFrame = images
+            firstFramePath = "{}/{}".format(framesPath, firstFrame)
+            
 
 
         prevSize = imgSize
         checkIfBlackFrame(images)
+
+#checking first frame - it will add to the end of the report but that's ok
+firstFrameSize = os.path.getsize(firstFramePath)
+if firstFrameSize < minSize:
+    brokenImages.append("{} : File abnormally small".format(firstFrame))
+    
 
 print("Writing Report...")
 
