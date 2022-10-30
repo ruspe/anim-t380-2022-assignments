@@ -1,20 +1,16 @@
-mayaSnowman.py creates three polyspheres in the shape of a snowman.
+scanBrokenFrames.py will scan a file path of images and look for broken frames. 
+It looks for:
+    • Frames with a file size of less than 50% of the frame before it
+    • Frames that only contain the color black
 
-It takes 3 arguments:
-    
-    • baseRadius: Radius of the bottom sphere (int)
-    • midRadius: radius of the middle sphere (int)
-    • topRadius: radius of the top sphere (int)
+It takes 1 argument:
+     • pathToScan: The path where the frames are located. Note that this must in be in quotes and only contain images, as this script will scan everything in that path.  
 
-It will save the file as "snowman.ma" in your default project folder.
 
-To run on windows, go to the command prompt and type this:
+It will save 'report.txt' in the path specified. 
 
-    cd "C:\Program Files\Autodesk\Maya2022\bin\"
-then:
-
-    mayapy.exe "C:[File path]\mayaSnowman.py" baseRadius midRadius topRadius
+This project also contains a folder with test images: 1 is abnormally small and the other is all black.
 
 example:
 
-    mayapy.exe "C:\Users\cypek\Documents\anim-t380-2022-assignments\assignment-2\python\mayaSnowman.py" 5 3 1
+    $ python scanBrokenFrames.py "C:\Users\cypek\Documents\anim-t380-2022-assignments\assignment-midterm\test"
