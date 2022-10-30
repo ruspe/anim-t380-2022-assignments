@@ -5,14 +5,15 @@ This script will scan a path for broken images and print report.txt with any ima
 
 import os
 from os import listdir
-from re import T
-from statistics import variance
+#from re import T
+#from statistics import variance
 
 
 import argparse
 
 parser = argparse.ArgumentParser(description='This script scans a file path of images and reports if any are abnormally small or all black.')
 parser.add_argument('pathToScan', type=str, help="STRING: Path of images to scan")
+parser.add_argument('extension', type=str, help="STRING: intended extension of images")
 
 args = parser.parse_args()
 
@@ -48,25 +49,29 @@ for images in os.listdir(framesPath):
 
     imgPath = "{}/{}".format(framesPath, images)
 
-    #get image size
-    imgSize = os.path.getsize(imgPath)
-
-    #gets the size of the previous frame
-    try: prevSize
-    except NameError: prevSize = None
-    #if previous frame exists, compare sizes
-    if prevSize != None:
-
-        #declaring variable for minimum size
-        minSize = prevSize * sizeVariation
-
-        #if size is too small
-        if imgSize < minSize:
-            brokenImages.append("{} : File abnormally small".format(images))
+    #check if image name ends with given extension
+    if images.endswith(args.extension):
 
 
-    prevSize = imgSize
-    checkIfBlackFrame(images)
+        #get image size
+        imgSize = os.path.getsize(imgPath)
+
+        #gets the size of the previous frame
+        try: prevSize
+        except NameError: prevSize = None
+        #if previous frame exists, compare sizes
+        if prevSize != None:
+
+            #declaring variable for minimum size
+            minSize = prevSize * sizeVariation
+
+            #if size is too small
+            if imgSize < minSize:
+                brokenImages.append("{} : File abnormally small".format(images))
+
+
+        prevSize = imgSize
+        checkIfBlackFrame(images)
 
 print("Writing Report...")
 

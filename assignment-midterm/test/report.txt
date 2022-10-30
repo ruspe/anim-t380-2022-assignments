@@ -1,0 +1,3 @@
+final_Sequence.0015.jpeg : File abnormally small 
+final_Sequence.0066.jpeg : File abnormally small 
+final_Sequence.0066.jpeg : Black frame 
