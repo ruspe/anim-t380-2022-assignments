@@ -1,7 +1,12 @@
-initializeFileName.py takes the current maya scene and saves it with the proper naming conventions.
-The file format is this: {project}.{asset}.{task}.{artist}.{version}.{ext}
-______________
+mayaTransformTools.py is a script for maya's shelf.
+It creates a pop up window with six buttons:
+    • Global Mirror X
+    • Global Mirror Y
+    • Global Mirror Z
+    • Local Mirror X
+    • Local Mirror Y
+    • Local Mirror Z
 
-incrementVersion.py takes a file name, given it's following the conventions set up in initializeFileName.py, and increments it by 1. 
-If your file is not set up with that naming convention, use initializeFileName.py first.
-It takes no arguments. 
+
+Make sure the object(s) you'd like to mirror is selected.
+    
