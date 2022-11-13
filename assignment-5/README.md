@@ -1,5 +1,6 @@
 mayaTransformTools.py is a script for maya's shelf.
 It creates a pop up window with six buttons:
+
     • Global Mirror X
     • Global Mirror Y
     • Global Mirror Z
