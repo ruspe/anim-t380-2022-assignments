@@ -1,19 +1,9 @@
-scanBrokenFrames.py will scan a file path of images and look for broken frames. 
-It looks for:
+3D Asset exporter
+Before exporting, it should:
 
-    • Frames with a file size of less than 50% of the frame before it
-    • Frames that only contain the color black
+    • Freeze transforms and delete history
+    • Check if asset has been UV'ed
 
-It takes 2 arguments:
+It should export an asset following this naming convention: {asset name}_{location}_V{#}.fbx
+Assets should be exported into the unreal project's directory. 
 
-     • pathToScan: The path where the frames are located. Note that this must in be in quotes and only contain images, as this script will scan everything in that path.  (string)
-     • extension: extension of target frames ex. .jpeg (string)
-
-
-It will save 'report.txt' in the path specified. 
-
-This project also contains a folder with test images: 1 is abnormally small and the other is all black.
-
-example:
-
-    $ python scanBrokenFrames.py "C:\Users\cypek\Documents\anim-t380-2022-assignments\assignment-midterm\test" .jpeg
