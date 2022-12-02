@@ -6,7 +6,10 @@ import maya.cmds as cmds
 import os
 import json
 
-settings = json.load("C:/Users/cypek/Documents/anim-t380-2022-assignments/assignment-final/python/settings.json") #move to standard location
+#get settings from program files - user needs to copy file here
+f = open("C:/Program Files/settings.json")
+
+settings = json.load(f)
 
 #asset information for naming - should be inputted by user through UI
 assetInfo = {
