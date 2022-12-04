@@ -28,6 +28,10 @@ def checkUVs():
     else:
         print("Object has UVs") #script continues
 
+#function for reselecting the selected objects after cycling through them
+def reselectList():
+    for obj in selected:
+        cmds.select(obj, add=True)
 
 
 
@@ -51,9 +55,13 @@ filePathFormat = "{projectDirectory}/ShadyCreekLodge/Content/ShadyCreekLodge/Ass
 
 selected = cmds.ls(selection=True)
 
-#check UVs
+#check UVs for each object
+#this has to be done before history is deleted for any object in case user wants to interrupt
+for obj in selected:
+    cmds.select(obj)
+    checkUVs()
 
-checkUVs()
+reselectList()
 
 #Freeze transforms
 cmds.makeIdentity(a=True)
