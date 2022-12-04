@@ -9,16 +9,28 @@ import json
 #function for checking UVs
 #works by checking the history of the object for anything UV related that has been done - does not work if history has already been deleted
 def checkUVs():
-    UVHistory = ["polyTweak", "polyMapSewMove"] #should be a list of all UV related commands
+    UVHistory = ["polyTweak", "polyMapSewMove", "polyAutoProjection"] #should be a list of all UV related commands
 
     objHistory = cmds.listHistory()
     print(objHistory)
 
+    uvHist = []
+
     for ele in UVHistory:
         if any(ele in s for s in objHistory):
-            print("yes UVs")  #UVs have been done - tool can continue
+            uvHist.append(True)
         else:
-            print("no UVs") # pop up here - "There is no UV history on this object. Fix now?" with Fix (brings up UV editor) or Continue Anyway (continues tool)
+            uvHist.append(False)
+
+    if all(item is False for item in uvHist):
+        print("no UVS") #replace with pop up - "[obj name] has no UV history. Please check to make sure proper UVs have been applied"
+        #Check now -> opens UV window, Continue exporting -> keeps the script going
+    else:
+        print("Object has UVs") #script continues
+
+
+
+
 
 
 #get settings from program files - user needs to copy file here
@@ -37,7 +49,10 @@ assetInfo = {
 #file path
 filePathFormat = "{projectDirectory}/ShadyCreekLodge/Content/ShadyCreekLodge/Assets/Environment/{location}/{asset}_{location}_V{version}.fbx"
 
+selected = cmds.ls(selection=True)
+
 #check UVs
+
 checkUVs()
 
 #Freeze transforms
