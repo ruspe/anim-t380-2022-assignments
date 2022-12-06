@@ -23,6 +23,8 @@ assetInfo = {
 "projectDirectory": settings.get("projectDirectory")
 } #temp values
 
+location = ["basement","groundFloor","secondFloor"]
+
 #file path
 filePathFormat = "{projectDirectory}/ShadyCreekLodge/Content/ShadyCreekLodge/Assets/Environment/{location}/{asset}_{location}_V{version}.fbx"
 
@@ -48,48 +50,43 @@ class MyMayaWidget(QMainWindow):
 
 
 		#asset input widget
-		assetInput = QLineEdit(self)
-		assetInput.setMaxLength(10)
-		assetInput.setPlaceholderText("Enter asset name")
+		assetLabel = QLabel(self)
+		assetLabel.setText("Asset:")
 
+		self.assetInput = QLineEdit(self)
+		self.assetInput.setPlaceholderText("Enter asset name")
+
+		selectButton = QPushButton("Confirm Selection") 
 	
-		selectButton = QPushButton("Select Object") 
-
 		selectLayout = QHBoxLayout()
-		selectLayout.addWidget(assetInput)
-		selectLayout.addWidget(selectButton)
+		selectLayout.addWidget(assetLabel)
+		selectLayout.addWidget(self.assetInput)
 
 		#location input widget
-
 		locationLabel = QLabel(self)
 		locationLabel.setText("Location:")
-		locationCombo = QComboBox(self)
-		locationCombo.addItems(assetInfo["location"])
+		self.locationCombo = QComboBox(self)
+		self.locationCombo.addItems(location)
 
 		locationLayout = QHBoxLayout()
 		locationLayout.addWidget(locationLabel)
-		locationLayout.addWidget(locationCombo)
+		locationLayout.addWidget(self.locationCombo)
 
 		#version input widget
 		versionLabel = QLabel(self)
 		versionLabel.setText("Version:")
-		versionInput = QLineEdit(self)
+		self.versionInput = QLineEdit(self)
 		
-
 		versionLayout = QHBoxLayout()
 		versionLayout.addWidget(versionLabel)
-		versionLayout.addWidget(versionInput)
+		versionLayout.addWidget(self.versionInput)
 
 		#button widgets
-
-		
 		exportButton = QPushButton("Export Model")
 		checkUV = QPushButton("Check UVs")
 
-
 		#Layout of the widgets
 		hBoxLayout = QHBoxLayout()
-		
 		hBoxLayout.addWidget(exportButton)
 
 		vBoxLayout = QVBoxLayout()
@@ -97,26 +94,40 @@ class MyMayaWidget(QMainWindow):
 		vBoxLayout.addLayout(selectLayout)
 		vBoxLayout.addLayout(locationLayout)
 		vBoxLayout.addLayout(versionLayout)
+		vBoxLayout.addWidget(selectButton)
 		vBoxLayout.addWidget(checkUV)
 		vBoxLayout.addLayout(hBoxLayout)
 		
-
 		widget = QWidget(self)
 		widget.setLayout(vBoxLayout)
 		self.setCentralWidget(widget)
 
 		#Connects buttons to actions
-		selectButton.clicked.connect(self.selectObject)
-		checkUV.clicked.connect(self.checkUVs)
+		selectButton.clicked.connect(self.renameAsset)
+		checkUV.clicked.connect(self.UVcheck)
 		exportButton.clicked.connect(self.exportFile)
+		self.locationCombo.currentTextChanged.connect(self.locationChange)
 
+		#Additional UI trigger Messages
+		self.confirmation = QMessageBox()
+		self.confirmation.setWindowTitle("Export Status")
+		self.confirmation.setText("Your model has been exported")
 		
 
-	def selectObject(self):
-		cmds.select(self.assetInput.text)
+
+	#Changes directory of location
+	def locationChange(self):
+		assetInfo["location"]= self.locationCombo.currentText()
+
+		#print(assetInfo)
+
+	#Changes directory of asset name and version 	
+	def renameAsset(self):
+		assetInfo["asset"] = self.assetInput.text()
+		assetInfo["version"] = self.versionInput.text()
+		print(assetInfo)
 		
-
-
+	
 	#function for checking UVs
 	#works by checking the history of the object for anything UV related that has been done - does not work if history has already been deleted
 	def checkUVs(self):
@@ -147,21 +158,23 @@ class MyMayaWidget(QMainWindow):
 
 	#check UVs for each object
 	#this has to be done before history is deleted for any object in case user wants to interrupt
-	
-	# for obj in selected:
-	# 	cmds.select(obj)
-	# 	checkUVs(self)
+	def UVcheck(self):
+		for obj in selected:
+			cmds.select(obj)
+			self.checkUVs()
 
-	# reselectList()
+		self.reselectList()
 
 	
-	def exportFile(self):
+	def exportFile(self, i):
 		#Freeze transforms
 		cmds.makeIdentity(a=True)
 		#delete history
 		cmds.delete(constructionHistory = True)
 		#export file
 		cmds.file(filePathFormat.format(**assetInfo), force=True, exportSelected = True, type = 'FBX export')
+		
+		self.confirmation.exec_()
 		
 
 	#ui confirmation of exported asset
