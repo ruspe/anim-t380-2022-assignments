@@ -45,16 +45,20 @@ class MyMayaWidget(QMainWindow):
 		
 		self.setWindowTitle("Model Clean Up/Export Tool")
 		self.setGeometry(500, 300, 400, 100)
-		self.controlUI()
 
-	# Parent widget under Maya main window      
-		
-	def controlUI(self):
 
 		#input widget
-		assetInput = QLineEdit()
+		assetInput = QLineEdit(self)
 		assetInput.setMaxLength(10)
-		assetInput.setPlaceholderText("Enter asset name")  
+		assetInput.setPlaceholderText("Enter asset name")
+
+	
+		selectButton = QPushButton("Select Object") 
+
+		selectLayout = QHBoxLayout()
+		selectLayout.addWidget(assetInput)
+		selectLayout.addWidget(selectButton)
+		
 
 		#button widgets
 
@@ -62,6 +66,7 @@ class MyMayaWidget(QMainWindow):
 		delHistoryButton = QPushButton("Delete History")
 		exportButton = QPushButton("Export Model")
 		checkUV = QPushButton("Check UVs")
+
 
 		#Layout of the widgets
 		hBoxLayout = QHBoxLayout()
@@ -71,7 +76,7 @@ class MyMayaWidget(QMainWindow):
 
 		vBoxLayout = QVBoxLayout()
 		vBoxLayout.addStretch(1)
-		vBoxLayout.addWidget(assetInput)
+		vBoxLayout.addLayout(selectLayout)
 		vBoxLayout.addWidget(checkUV)
 		vBoxLayout.addLayout(hBoxLayout)
 		
@@ -81,10 +86,17 @@ class MyMayaWidget(QMainWindow):
 		self.setCentralWidget(widget)
 
 		#Connects buttons to actions
+		selectButton.clicked.connect(self.selectObject)
 		checkUV.clicked.connect(self.checkUVs)
 		freezeButton.clicked.connect(self.freezeTransform)
 		delHistoryButton.clicked.connect(self.delHistory)
 		exportButton.clicked.connect(self.exportFile)
+
+		
+
+	def selectObject(self):
+		cmds.select(self.assetInput.text)
+		
 
 
 	#function for checking UVs
