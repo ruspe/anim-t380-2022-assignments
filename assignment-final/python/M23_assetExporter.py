@@ -11,22 +11,22 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from shiboken2 import wrapInstance 
 
-# #get settings from program files - user needs to copy file here
-# f = open("C:/Program Files/settings.json")
-# settings = json.load(f)
+#get settings from program files - user needs to copy file here
+f = open("C:/Program Files/settings.json")
+settings = json.load(f)
 
-# #asset information for naming - should be inputted by user through UI
-# assetInfo = {
-# "asset": "testAsset",
-# "location": "basement", #location is either basement, groundFloor, or secondFloor
-# "version": 1,
-# "projectDirectory": settings.get("projectDirectory")
-# } #temp values
+#asset information for naming - should be inputted by user through UI
+assetInfo = {
+"asset": "testAsset",
+"location": "basement", #location is either basement, groundFloor, or secondFloor
+"version": 1,
+"projectDirectory": settings.get("projectDirectory")
+} #temp values
 
-# #file path
-# filePathFormat = "{projectDirectory}/ShadyCreekLodge/Content/ShadyCreekLodge/Assets/Environment/{location}/{asset}_{location}_V{version}.fbx"
+#file path
+filePathFormat = "{projectDirectory}/ShadyCreekLodge/Content/ShadyCreekLodge/Assets/Environment/{location}/{asset}_{location}_V{version}.fbx"
 
-# selected = cmds.ls(selection=True)
+selected = cmds.ls(selection=True)
 
 # Get a reference to the main Maya application window
 def maya_main_window():	
@@ -47,7 +47,7 @@ class MyMayaWidget(QMainWindow):
 		self.setGeometry(500, 300, 400, 100)
 
 
-		#input widget
+		#asset input widget
 		assetInput = QLineEdit(self)
 		assetInput.setMaxLength(10)
 		assetInput.setPlaceholderText("Enter asset name")
@@ -58,25 +58,45 @@ class MyMayaWidget(QMainWindow):
 		selectLayout = QHBoxLayout()
 		selectLayout.addWidget(assetInput)
 		selectLayout.addWidget(selectButton)
+
+		#location input widget
+
+		locationLabel = QLabel(self)
+		locationLabel.setText("Location:")
+		locationCombo = QComboBox(self)
+		locationCombo.addItems(assetInfo["location"])
+
+		locationLayout = QHBoxLayout()
+		locationLayout.addWidget(locationLabel)
+		locationLayout.addWidget(locationCombo)
+
+		#version input widget
+		versionLabel = QLabel(self)
+		versionLabel.setText("Version:")
+		versionInput = QLineEdit(self)
 		
+
+		versionLayout = QHBoxLayout()
+		versionLayout.addWidget(versionLabel)
+		versionLayout.addWidget(versionInput)
 
 		#button widgets
 
-		freezeButton = QPushButton("Freeze Transform")
-		delHistoryButton = QPushButton("Delete History")
+		
 		exportButton = QPushButton("Export Model")
 		checkUV = QPushButton("Check UVs")
 
 
 		#Layout of the widgets
 		hBoxLayout = QHBoxLayout()
-		hBoxLayout.addWidget(freezeButton)
-		hBoxLayout.addWidget(delHistoryButton)
+		
 		hBoxLayout.addWidget(exportButton)
 
 		vBoxLayout = QVBoxLayout()
 		vBoxLayout.addStretch(1)
 		vBoxLayout.addLayout(selectLayout)
+		vBoxLayout.addLayout(locationLayout)
+		vBoxLayout.addLayout(versionLayout)
 		vBoxLayout.addWidget(checkUV)
 		vBoxLayout.addLayout(hBoxLayout)
 		
@@ -88,8 +108,6 @@ class MyMayaWidget(QMainWindow):
 		#Connects buttons to actions
 		selectButton.clicked.connect(self.selectObject)
 		checkUV.clicked.connect(self.checkUVs)
-		freezeButton.clicked.connect(self.freezeTransform)
-		delHistoryButton.clicked.connect(self.delHistory)
 		exportButton.clicked.connect(self.exportFile)
 
 		
@@ -130,24 +148,21 @@ class MyMayaWidget(QMainWindow):
 	#check UVs for each object
 	#this has to be done before history is deleted for any object in case user wants to interrupt
 	
-	for obj in selected:
-		cmds.select(obj)
-		checkUVs()
+	# for obj in selected:
+	# 	cmds.select(obj)
+	# 	checkUVs(self)
 
 	# reselectList()
 
-	#Freeze transforms
-	def freezeTransform(self):
-		cmds.makeIdentity(a=True)
 	
-
-	#delete history
-	def delHistory(self):
-		cmds.delete(constructionHistory = True)
-
-	#export file
 	def exportFile(self):
+		#Freeze transforms
+		cmds.makeIdentity(a=True)
+		#delete history
+		cmds.delete(constructionHistory = True)
+		#export file
 		cmds.file(filePathFormat.format(**assetInfo), force=True, exportSelected = True, type = 'FBX export')
+		
 
 	#ui confirmation of exported asset
 
