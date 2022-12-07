@@ -112,6 +112,16 @@ class MyMayaWidget(QMainWindow):
 		self.confirmation = QMessageBox()
 		self.confirmation.setWindowTitle("Export Status")
 		self.confirmation.setText("Your model has been exported")
+
+		#UV history found message
+		self.UVConfirmationTrue = QMessageBox()
+		self.UVConfirmationTrue.setWindowTitle("UV Confirmation")
+		self.UVConfirmationTrue.setText("Object has UV history - you may continue export")
+
+		#No UV History message
+		self.UVConfirmationFalse = QMessageBox()
+		self.UVConfirmationFalse.setWindowTitle("UV Confirmation")
+		self.UVConfirmationFalse.setText("Object does not have UV History - did you remember to UV this model??")
 		
 
 
@@ -145,10 +155,9 @@ class MyMayaWidget(QMainWindow):
 				uvHist.append(False)
 
 		if all(item is False for item in uvHist):
-			print("no UVS") #replace with pop up - "[obj name] has no UV history. Please check to make sure proper UVs have been applied"
-			#Check now -> opens UV window, Continue exporting -> keeps the script going
+			self.UVConfirmationFalse.exec_()
 		else:
-			print("Object has UVs") #script continues
+			self.UVConfirmationTrue.exec_()
 
 	#function for reselecting the selected objects after cycling through them
 	def reselectList(self):
